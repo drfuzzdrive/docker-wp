@@ -1,0 +1,50 @@
+server {
+    server_name default;
+    listen 80;
+    #listen 443 default_server ssl http2;
+    #ssl_certificate /etc/nginx/ssl/default/fullchain.pem;;
+    #ssl_certificate_key /etc/nginx/ssl/default/privkey.pem;
+    #include /etc/letsencrypt/options-ssl-nginx.conf;
+    #ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    index index.php index.html;
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+    root /var/www/default;
+
+    location = /favicon.ico {
+         log_not_found off;
+         access_log off;
+    }
+
+    location = /robots.txt {
+                allow all;
+                log_not_found off;
+                access_log off;
+    }
+    
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    } 
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+ #       fastcgi_pass php-fpm:9000;
+        fastcgi_pass localhost:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+    
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+                expires max;
+                log_not_found off;
+    }
+    
+    location ~ /.well-known/acme-challenge {
+         allow all; 
+         root /var/www/certbot;
+    }
+}
+ 
