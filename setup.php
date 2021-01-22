@@ -28,9 +28,9 @@ foreach ($domains as $domain) {
                     $credentials = get_wp_credentials($domain);
                     # Создаем базу данных и пользователя, если база не существует
                     create_mysql_credentials($credentials, $domain);
-                    #Создаем nginx конфиг для домена
-                    create_nginx_config($domain);
                 }
+                #Создаем nginx конфиг для домена
+                create_nginx_config($domain);
                 
             }
         }

@@ -10,28 +10,44 @@ services:
             - ./domains:/var/www
 #            - ./ssl:/etc/nginx/ssl
             - ./nginx/:/etc/nginx/conf.d/
+            - ./logs:/var/log/nginx/
 #            - ./certbot/conf:/etc/nginx/ssl
 #            - ./certbot/www:/var/www/certbot
         depends_on:
-            - php-fpm
-        network_mode: "host"
-    php-fpm:
-        container_name: php-fpm
-        user: "1000:1000"
-        build:
-            context: ./php-fpm
-            dockerfile: Dockerfile
-        volumes:
-            - ./domains:/var/www
+            - site1
+            - site2
+            # - php-fpm
         network_mode: "host"
 
-#    certbot:
-#        container_name: certbot
-        # image: certbot/certbot
+    # php-fpm:
+    #     container_name: php-fpm
+    #     user: "1000:1000"
+    #     build:
+    #         context: ./php-fpm
+    #         dockerfile: Dockerfile
+    #     volumes:
+    #         - ./domains:/var/www
+    #     network_mode: "host"
+
+    site1:
+        ports:
+            - "9000:9000"
+        container_name: site1
+        user: "1000:1000"
+        build:
+            context: ./site1
+            dockerfile: Dockerfile
         # volumes:
-        #     - ./certbot/conf:/etc/letsencrypt
-        #     - ./certbot/logs:/var/log/letsencrypt
-        #     - ./certbot/www:/var/www/certbot
-        # depends_on: 
-        #     - nginx
+            # - ./domains:/var/www
+        network_mode: "host"
+    
+    site2:
+        container_name: site2
+        user: "1000:1000"
+        build:
+            context: ./site2
+            dockerfile: Dockerfile
+        # volumes:
+            # - ./domains:/var/www
+        network_mode: "host"
  
